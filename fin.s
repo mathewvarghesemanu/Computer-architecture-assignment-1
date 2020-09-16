@@ -30,17 +30,15 @@ _my_loop_in:
 	srai r11,r4,#1
 	add r4,r11,r0
 
-	;add counter
-	add r3, r3, #1
 
 	; If r4==0, jump out of this loop.
 	; NOTE, for now, every instruction that could jump 
 	; should be followed by a nop
-	beqz r4,_show
+	beqz r4, _my_loop_out 
 	nop
 
-	
-_show:
+	add r3, r3, #1
+
 	; The following lines make a function call to printf. 
 	; They're equiavalent to "printf(LC0, r3)" in C.
 	sub r14,r14,#8
@@ -55,7 +53,7 @@ _show:
 	; Jump back to the beginning of this loop
 	; NOTE, for now, every instruction that could jump 
 	; should be followed by a nop
-	j _my_loop_out
+	j _my_loop_in
 	nop
 
 _my_loop_out:
