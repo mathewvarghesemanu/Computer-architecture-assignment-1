@@ -10,6 +10,7 @@ LC0:
 
 	.align 4
 .global _main
+
 _main:
 	; Initialize Stack Pointer, set r14=0.
 	; r0 always contains a 0 	and cannot be modified
@@ -17,16 +18,22 @@ _main:
 	lhi r14, ((memSize-4)>>16)&0xffff
 	addui r14, r14, ((memSize-4)&0xffff)
 
-	; Set r4=13
+	; Set r4, which is the register that stores number
 	add r4, r0, #32
-	; Set r3=0
+	; Set r3=0, which is the the register used for counting
 	add r3, r0, r0
 
-	;check if perfect log
-	sub r11,r4,#1
+	;check if perfect log by applying and to number and number-1
+	sub r11,r4,#1   
 	and r12,r11,r4
 	beqz r12,_perfectlog
 	nop
+
+_perfectlog:
+	sub r3,r0,#1
+	j _my_loop_in
+	nop
+
 
 _my_loop_in:
 	
@@ -46,10 +53,6 @@ _my_loop_in:
 	j _my_loop_in
 	nop
 
-_perfectlog:
-	sub r3,r0,#1
-	j _my_loop_in
-	nop
 
 
 _show:
