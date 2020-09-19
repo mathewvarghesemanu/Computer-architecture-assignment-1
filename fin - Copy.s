@@ -6,7 +6,7 @@
 _a:
 	.word 10
 LC0:
-	.ascii "Log is %d\12\0"
+	.ascii "Hi No.%d\12\0"
 
 	.align 4
 .global _main
@@ -18,23 +18,18 @@ _main:
 	addui r14, r14, ((memSize-4)&0xffff)
 
 	; Set r4=13
-	add r4, r0, #32
+	add r4, r0, #13
+
 	; Set r3=0
 	add r3, r0, r0
 
-	;check if perfect log
-	sub r11,r4,#1
-	and r12,r11,r4
-	beqz r12,_perfectlog
-	nop
-
+	
 _my_loop_in:
 	
 	;log operation
 	srai r11,r4,#1
 	add r4,r11,r0
 
-	add r3, r3, #1
 
 	; If r4==0, jump out of this loop.
 	; NOTE, for now, every instruction that could jump 
@@ -42,18 +37,9 @@ _my_loop_in:
 	beqz r4, _show 
 	nop
 
+	add r3, r3, #1
 	
-	j _my_loop_in
-	nop
-
-_perfectlog:
-	sub r3,r0,#1
-	j _my_loop_in
-	nop
-
-
 _show:
-
 	; The following lines make a function call to printf. 
 	; They're equiavalent to "printf(LC0, r3)" in C.
 	sub r14,r14,#8
@@ -81,7 +67,6 @@ _exit:
 	trap #0
 	jr r31
 	nop
-
 _printf:
 	trap #5
 	jr r31

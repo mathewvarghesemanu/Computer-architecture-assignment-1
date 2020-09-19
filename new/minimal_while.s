@@ -6,53 +6,39 @@
 _a:
 	.word 10
 LC0:
-	.ascii "Log is %d\12\0"
+	.ascii "Hi No.%d\12\0"
 
 	.align 4
 .global _main
 _main:
 	; Initialize Stack Pointer, set r14=0.
-	; r0 always contains a 0 	and cannot be modified
+	; r0 always contains a 0 value and cannot be modified
 	add r14,r0,r0
 	lhi r14, ((memSize-4)>>16)&0xffff
 	addui r14, r14, ((memSize-4)&0xffff)
 
-	; Set r4=13
-	add r4, r0, #32
+
+	; These 2 lines are equivalent to "r4=_a" in C
+	lhi r4,(_a>>16)&0xffff
+	addui r4,r4,(_a&0xffff)
+
+	; This line is equivalent to "r4=*(r4+0)" in C.
+	lw r4,0(r4)
+
 	; Set r3=0
 	add r3, r0, r0
 
-	;check if perfect log
-	sub r11,r4,#1
-	and r12,r11,r4
-	beqz r12,_perfectlog
-	nop
-
 _my_loop_in:
-	
-	;log operation
-	srai r11,r4,#1
-	add r4,r11,r0
 
-	add r3, r3, #1
+	sub r5, r4, r3
 
-	; If r4==0, jump out of this loop.
+	; If r5==0, jump out of this loop.
 	; NOTE, for now, every instruction that could jump 
 	; should be followed by a nop
-	beqz r4, _show 
+	beqz r5, _my_loop_out 
 	nop
 
-	
-	j _my_loop_in
-	nop
-
-_perfectlog:
-	sub r3,r0,#1
-	j _my_loop_in
-	nop
-
-
-_show:
+	add r3, r3, #1
 
 	; The following lines make a function call to printf. 
 	; They're equiavalent to "printf(LC0, r3)" in C.
@@ -68,7 +54,7 @@ _show:
 	; Jump back to the beginning of this loop
 	; NOTE, for now, every instruction that could jump 
 	; should be followed by a nop
-	j _my_loop_out
+	j _my_loop_in
 	nop
 
 _my_loop_out:
@@ -81,7 +67,6 @@ _exit:
 	trap #0
 	jr r31
 	nop
-
 _printf:
 	trap #5
 	jr r31
