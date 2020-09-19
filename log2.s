@@ -6,7 +6,7 @@
 _a:
 	.word 10
 LC0:
-	.ascii "Log is %d\12\0"
+	.ascii "Log of input is %d\12\0"
 
 	.align 4
 .global _main
@@ -19,7 +19,7 @@ _main:
 	addui r14, r14, ((memSize-4)&0xffff)
 
 	; Set r4, which is the register that stores number
-	add r4, r0, #32
+	add r4, r0, #25
 	; Set r3=0, which is the the register used for counting
 	add r3, r0, r0
 
@@ -27,11 +27,6 @@ _main:
 	sub r11,r4,#1   
 	and r12,r11,r4
 	beqz r12,_perfectlog
-	nop
-
-_perfectlog:	; subtracts count variable if number is perfect log
-	sub r3,r0,#1
-	j _my_loop_in
 	nop
 
 
@@ -52,6 +47,12 @@ _my_loop_in:
 	
 	j _my_loop_in
 	nop
+
+_perfectlog:	; subtracts count variable if number is perfect log
+	sub r3,r0,#1
+	j _my_loop_in
+	nop
+
 
 
 
